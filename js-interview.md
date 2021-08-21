@@ -8,35 +8,35 @@ Within Built, every Project has a Budget which has a collection of budgetItems.T
 
 Given the provided Budget and DrawRequests data, fill in the body for the processDraws function below.This function should return an array of all the drawIds that were successfully processed according to the following rules:
 
-- BudgetItems cannot be overdrawn
-- The Drawable amount for BudgetItems is determined by subtracting a BudgetItems fundedToDate from its originalAmount
-- Draws have to be processed in order of effectiveDate
+-   BudgetItems cannot be overdrawn
+-   The Drawable amount for BudgetItems is determined by subtracting a BudgetItems fundedToDate from its originalAmount
+-   Draws have to be processed in order of effectiveDate
 
 ## Starting code (Plain JavaScript variation)
 
 ```js
 const budget = {
-  amount : 126000,
-  balanceRemaining : 108500,
-  budgetItems : [
-    { itemId : 1, fundedToDate : 2500, originalAmount : 10000},
-    { itemId : 2, fundedToDate : 15000, originalAmount : 16000},
-    { itemId : 3, fundedToDate : 0, originalAmount : 100000}
-  ]
+    amount: 126000,
+    balanceRemaining: 108500,
+    budgetItems: [
+        { itemId: 1, fundedToDate: 2500, originalAmount: 10000 },
+        { itemId: 2, fundedToDate: 15000, originalAmount: 16000 },
+        { itemId: 3, fundedToDate: 0, originalAmount: 100000 },
+    ],
 };
 
 const drawRequests = [
-  { drawId : 1, itemId : 2, amount : 750, effectiveDate : '11/15/2015'},
-  { drawId : 2, itemId : 1, amount : 2000, effectiveDate : '11/20/2015'},
-  { drawId : 3, itemId : 3, amount : 50000, effectiveDate : '10/5/2015'},
-  { drawId : 4, itemId : 3, amount : 60000, effectiveDate : '10/6/2015'},
-  { drawId : 5, itemId : 2, amount : 500, effectiveDate : '10/31/2015'},
-  { drawId : 6, itemId : 3, amount : 50000, effectiveDate : '10/7/2015'},
-  { drawId : 7, itemId : 2, amount : 1000, effectiveDate : '11/16/2015'},
+    { drawId: 1, itemId: 2, amount: 750, effectiveDate: '11/15/2015' },
+    { drawId: 2, itemId: 1, amount: 2000, effectiveDate: '11/20/2015' },
+    { drawId: 3, itemId: 3, amount: 50000, effectiveDate: '10/5/2015' },
+    { drawId: 4, itemId: 3, amount: 60000, effectiveDate: '10/6/2015' },
+    { drawId: 5, itemId: 2, amount: 500, effectiveDate: '10/31/2015' },
+    { drawId: 6, itemId: 3, amount: 50000, effectiveDate: '10/7/2015' },
+    { drawId: 7, itemId: 2, amount: 1000, effectiveDate: '11/16/2015' },
 ];
 
 function processDraws(drawRequests, budget) {
-  //@todo implement solution here
+    //@todo implement solution here
 }
 
 const results = processDraws(drawRequests, budget);
@@ -107,9 +107,8 @@ console.log(JSON.stringify(results, null, 2));
 
 Modify the processDraws function to also update the Budget by reference according to the following rules:
 
-- update each BudgetItem's fundedToDate appropriately
-- update the Budget's balanceRemaining appropriately
-
+-   update each BudgetItem's fundedToDate appropriately
+-   update the Budget's balanceRemaining appropriately
 
 ## Bonus 2 (and example solution)
 

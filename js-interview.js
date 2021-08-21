@@ -1,3 +1,5 @@
+'use strict';
+
 const budget = {
     amount: 126000,
     balanceRemaining: 108500,
@@ -24,7 +26,7 @@ function processDraws(drawRequests, budget) {
     const balanceArray = [];
 
     // Define budget item balances
-    for (i = 0; i < budgetItemCount; i++) {
+    for (let i = 0; i < budgetItemCount; i++) {
         const balanceName = 'balance' + (i + 1);
         const itemBalance =
             budget.budgetItems[i].originalAmount -
@@ -53,7 +55,7 @@ function processDraws(drawRequests, budget) {
         console.log('total num budget items =', numBudgetItems);
 
         // Calculate budget balances for each budget item
-        for (i = 1; i <= numBudgetItems; i++) {
+        for (let i = 1; i <= numBudgetItems; i++) {
             let currentBalance = balanceArray[i - 1].balance;
             console.log(
                 'current balance for',
@@ -71,14 +73,14 @@ function processDraws(drawRequests, budget) {
                         'from',
                         currentBalance
                     );
-                    currentBalance = currentBalance - item.amount;
+
                     // Test for insufficient funds
-                    if (currentBalance < 0) {
+                    if (currentBalance - item.amount < 0) {
                         console.log('insufficient funds. draw not processed');
-                        currentBalance = currentBalance + item.amount;
                         console.log('current balance=', currentBalance);
                         // If sufficient funds commence draw
                     } else {
+                        currentBalance = currentBalance - item.amount;
                         console.log(
                             'draw successful. remainder for',
                             balanceArray[i - 1].balanceName,
