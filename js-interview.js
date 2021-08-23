@@ -1,6 +1,6 @@
 'use strict';
 
-const budget = {
+let budget = {
     amount: 126000,
     balanceRemaining: 108500,
     budgetItems: [
@@ -45,59 +45,81 @@ function processDraws(drawRequests, budget) {
     );
     console.log('draw requests sorted by date:', drawRequests);
 
-    // Create new array for results
-    const drawResults = [];
-
-    // Attempt draw
-    const attemptDraw = () => {
-        // First establish number of budget items
-        const numBudgetItems = balanceArray.length;
-        console.log('total num budget items =', numBudgetItems);
-
-        // Calculate budget balances for each budget item
-        for (let i = 1; i <= numBudgetItems; i++) {
-            let currentBalance = balanceArray[i - 1].balance;
-            console.log(
-                'current balance for',
-                balanceArray[i - 1].balanceName,
-                'is:',
-                currentBalance
-            );
-
-            // Make draw requests based on budget item number/id
-            drawRequests.forEach((item) => {
-                if (item.itemId == i) {
-                    console.log(
-                        'processing draw amount',
-                        item.amount,
-                        'from',
-                        currentBalance
-                    );
-
-                    // Test for insufficient funds
-                    if (currentBalance - item.amount < 0) {
-                        console.log('insufficient funds. draw not processed');
-                        console.log('current balance=', currentBalance);
-                        // If sufficient funds commence draw
-                    } else {
-                        currentBalance = currentBalance - item.amount;
-                        console.log(
-                            'draw successful. remainder for',
-                            balanceArray[i - 1].balanceName,
-                            'is now',
-                            currentBalance
-                        );
-                        // Add successful draw record to array
-                        drawResults.push(item);
-                        console.log('successful budget draws:', drawResults);
-                    }
-                }
-            });
-        }
-    };
-    attemptDraw();
-    return drawResults;
+    return attemptDraw(balanceArray);
 }
 
 const results = processDraws(drawRequests, budget);
 console.log(JSON.stringify(results, null, 2));
+
+//
+// For brevity, putting business logic here:
+//
+
+// Attempt draw
+function attemptDraw(balanceArray) {
+    // Create new array for results
+    const drawResults = [];
+    // First establish number of budget items
+    const numBudgetItems = balanceArray.length;
+    console.log('total num budget items =', numBudgetItems);
+
+    // Calculate budget balances for each budget item
+    for (let i = 1; i <= numBudgetItems; i++) {
+        let currentBalance = balanceArray[i - 1].balance;
+        console.log(
+            'current balance for',
+            balanceArray[i - 1].balanceName,
+            'is:',
+            currentBalance
+        );
+
+        // Make draw requests based on budget item number/id
+        drawRequests.forEach((item) => {
+            if (item.itemId == i) {
+                console.log(
+                    'processing draw amount',
+                    item.amount,
+                    'from',
+                    currentBalance,
+                    '\n'
+                );
+
+                // Test for insufficient funds
+                if (currentBalance - item.amount < 0) {
+                    console.log('insufficient funds. draw not processed');
+                    console.log('current balance=', currentBalance, '\n');
+                    // If sufficient funds commence draw
+                } else {
+                    // Update budget balance
+                    currentBalance = currentBalance - item.amount;
+                    // Update funded to date amount
+                    budget.budgetItems[i - 1].fundedToDate =
+                        budget.budgetItems[i - 1].fundedToDate + item.amount;
+                    // Update total project budget balance remaining
+                    budget.balanceRemaining =
+                        budget.balanceRemaining - item.amount;
+                    console.log(
+                        'draw successful. remainder for',
+                        balanceArray[i - 1].balanceName,
+                        'is now',
+                        currentBalance
+                    );
+                    console.log(
+                        balanceArray[i - 1].balanceName,
+                        'funded to date=',
+                        budget.budgetItems[i - 1].fundedToDate
+                    );
+                    console.log(
+                        'remaining balance=',
+                        budget.balanceRemaining,
+                        '\n'
+                    );
+                    // Add successful draw record to array
+                    drawResults.push(item);
+                    //console.log('successful budget draws:', drawResults);
+                }
+            }
+        });
+    }
+    return drawResults;
+}
