@@ -55,6 +55,119 @@
                 },
             ];
 
+            // imported js code
+            function processDraws(drawRequests, budget) {
+                // Budget balances
+                const budgetItemCount = budget.budgetItems.length;
+                const balanceArray = [];
+
+                // Define budget item balances
+                for (let i = 0; i < budgetItemCount; i++) {
+                    const balanceName = 'balance' + (i + 1);
+                    const itemBalance =
+                        budget.budgetItems[i].originalAmount -
+                        budget.budgetItems[i].fundedToDate;
+                    balanceArray.push({
+                        balanceName: balanceName,
+                        itemId: i + 1,
+                        balance: itemBalance,
+                    });
+                }
+                console.log(
+                    'stored budget balances to draw against:',
+                    balanceArray
+                );
+
+                // Sort draw requests by date
+                drawRequests.sort(
+                    (a, b) =>
+                        new Date(a.effectiveDate) - new Date(b.effectiveDate)
+                );
+                console.log('draw requests sorted by date:', drawRequests);
+
+                return attemptDraw(balanceArray, budget);
+            }
+
+            //
+            // For brevity, putting business logic here:
+            //
+
+            // Attempt draw
+            function attemptDraw(balanceArray, budget) {
+                // Create new array for results
+                const drawResults = [];
+                // First establish number of budget items
+                const numBudgetItems = balanceArray.length;
+                console.log('total num budget items =', numBudgetItems);
+
+                // Calculate budget balances for each budget item
+                for (let i = 1; i <= numBudgetItems; i++) {
+                    let currentBalance = balanceArray[i - 1].balance;
+                    console.log(
+                        'current balance for',
+                        balanceArray[i - 1].balanceName,
+                        'is:',
+                        currentBalance
+                    );
+
+                    // Make draw requests based on budget item number/id
+                    drawRequests.forEach((item) => {
+                        if (item.itemId == i) {
+                            console.log(
+                                'processing draw amount',
+                                item.amount,
+                                'from',
+                                currentBalance,
+                                '\n'
+                            );
+
+                            // Test for insufficient funds
+                            if (currentBalance - item.amount < 0) {
+                                console.log(
+                                    'insufficient funds. draw not processed'
+                                );
+                                console.log(
+                                    'current balance=',
+                                    currentBalance,
+                                    '\n'
+                                );
+                                // If sufficient funds commence draw
+                            } else {
+                                // Update budget balance
+                                currentBalance = currentBalance - item.amount;
+                                // Update funded to date amount
+                                budget.budgetItems[i - 1].fundedToDate =
+                                    budget.budgetItems[i - 1].fundedToDate +
+                                    item.amount;
+                                // Update total project budget balance remaining
+                                budget.balanceRemaining =
+                                    budget.balanceRemaining - item.amount;
+                                console.log(
+                                    'draw successful. remainder for',
+                                    balanceArray[i - 1].balanceName,
+                                    'is now',
+                                    currentBalance
+                                );
+                                console.log(
+                                    balanceArray[i - 1].balanceName,
+                                    'funded to date=',
+                                    budget.budgetItems[i - 1].fundedToDate
+                                );
+                                console.log(
+                                    'remaining balance=',
+                                    budget.balanceRemaining,
+                                    '\n'
+                                );
+                                // Add successful draw record to array
+                                drawResults.push(item);
+                                //console.log('successful budget draws:', drawResults);
+                            }
+                        }
+                    });
+                }
+                return drawResults;
+            }
+
             class Budget extends React.Component {
                 constructor(props) {
                     super(props);
@@ -79,10 +192,23 @@
                 };
 
                 // bring js into class method here
+                run = () => {
+                    const results = processDraws(drawRequests, this.state);
+
+                    this.setState({ results });
+                };
 
                 render = () => {
-                    return <span>output here</span>; // run js here
-                    console.log(this.state.amount);
+                    return (
+                        <div>
+                            <h2>Built Interview Tech Challenge</h2>
+
+                            <button onClick={() => this.run()}>Run</button>
+                            <pre>
+                                {JSON.stringify(this.state.results, null, 2)}
+                            </pre>
+                        </div>
+                    );
                 };
             }
 
