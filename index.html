@@ -95,7 +95,7 @@
             // Attempt draw
             function attemptDraw(balanceArray, budget) {
                 // Create new array for results
-                const drawResults = [];
+                const drawResults = { successfullyProcessed: [], errors: [] };
                 // First establish number of budget items
                 const numBudgetItems = balanceArray.length;
                 console.log('total num budget items =', numBudgetItems);
@@ -159,7 +159,7 @@
                                     '\n'
                                 );
                                 // Add successful draw record to array
-                                drawResults.push(item);
+                                drawResults.successfullyProcessed.push(item);
                                 //console.log('successful budget draws:', drawResults);
                             }
                         }
