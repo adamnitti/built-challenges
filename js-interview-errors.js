@@ -66,13 +66,6 @@ console.log(JSON.stringify(results, null, 2));
 // For brevity, putting business logic here:
 //
 
-// Setup date format verify
-function validateDate(testdate) {
-    var date_regex =
-        /^(0?[1-9]|1[0-2])\/(0?[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
-    return date_regex.test(testdate);
-}
-
 // Attempt draw
 function attemptDraw(balanceArray) {
     // Create new array for results
@@ -139,34 +132,26 @@ function attemptDraw(balanceArray) {
     return drawResults;
 }
 
-/* if (
+if (
     item.itemId <= 0 ||
     item.itemId > numBudgetItems ||
     !(typeof item.itemId == 'number')
 ) {
-    console.log(
-        'Draw not processed due to invalid itemId',
-        '\n'
-    );
+    console.log('Draw not processed due to invalid itemId', '\n');
     drawResults.errors.push(item);
-    /* drawResults.errors.message.push(
-        'Draw not processed due to invalid itemId'
-    );
+    drawResults.errors.message.push('Draw not processed due to invalid itemId');
 }
 if (item.amount < 0 || !(typeof item.amount == 'number')) {
-    console.log(
-        'Draw not processed due to invalid draw amount',
-        '\n'
-    );
+    console.log('Draw not processed due to invalid draw amount', '\n');
     drawResults.errors.push(item);
 }
-if (
-    !validateDate(item.effectiveDate) ||
-    !('effectiveDate' in item)
-) {
-    console.log(
-        'Draw not processed due to invalid date format',
-        '\n'
-    );
+if (!validateDate(item.effectiveDate) || !('effectiveDate' in item)) {
+    console.log('Draw not processed due to invalid date format', '\n');
     drawResults.errors.push(item);
-} */
+}
+// Setup date format verify
+function validateDate(testdate) {
+    var date_regex =
+        /^(0?[1-9]|1[0-2])\/(0?[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$/;
+    return date_regex.test(testdate);
+}

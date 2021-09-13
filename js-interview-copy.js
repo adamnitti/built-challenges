@@ -12,30 +12,40 @@ const drawRequests = [
     { drawId: 1, itemId: 2, amount: 750, effectiveDate: '11/15/2015' },
     { drawId: 2, itemId: 1, amount: 2000, effectiveDate: '11/20/2015' },
     { drawId: 3, itemId: 3, amount: 50000, effectiveDate: '10/5/2015' },
-    { drawId: 9, itemId: 1, amount: 2000, effectiveDate: 123345 },
     { drawId: 4, itemId: 3, amount: 60000, effectiveDate: '10/6/2015' },
     { drawId: 5, itemId: 2, amount: 500, effectiveDate: '10/31/2015' },
     { drawId: 6, itemId: 3, amount: 50000, effectiveDate: '10/7/2015' },
     { drawId: 7, itemId: 2, amount: 1000, effectiveDate: '11/16/2015' },
     { drawId: 8, itemId: 16, amount: 750, effectiveDate: '11/15/2015' },
     { drawId: 10, itemId: 3, amount: -1, effectiveDate: '10/5/2015' },
+    { drawId: 9, itemId: 1, amount: 2000, effectiveDate: 123345 },
 ];
 
 function processDraws(drawRequests, budget) {
     //@todo implement solution here
 
     const numBudgetItems = budget.budgetItems.length;
-    const errorArray = { successfulDraws: [], unsuccessfulDraws: [] };
+    const resultsArray = { successfulDraws: [], unsuccessfulDraws: [] };
 
     checkErrors(drawRequests);
 
-    /* drawRequests.sort(
-        (a, b) => new Date(a.effectiveDate) - new Date(b.effectiveDate)
-    ); */
-    console.log(drawRequests);
+    attemptDraw(resultsArray.successfulDraws);
+
+    function attemptDraw(item) {
+        console.log(resultsArray.successfulDraws);
+        item.forEach((draw) => {
+            for (i = 0; i < numBudgetItems; i++) {
+                const budgetItem = budget.budgetItems;
+                let itemRemainder =
+                    budgetItem[i].originalAmount - budgetItem[i].fundedToDate;
+                console.log('in for loop');
+            }
+            //console.log('attempting draw', draw);
+        });
+    }
 
     function checkErrors(request) {
-        request.reverse().forEach((item) => {
+        request.forEach((item) => {
             let itemIndex = request.indexOf(item);
             console.log('checking drawId index:', itemIndex);
 
@@ -48,49 +58,35 @@ function processDraws(drawRequests, budget) {
                     'Draw not processed due to invalid itemId',
                     item.itemId
                 );
-                errorArray.unsuccessfulDraws.push(item);
-                console.log('itemIndex = ', itemIndex);
-                request.splice(itemIndex, 1);
 
-                //console.log(request);
-            }
-            if (item.amount < 0 || !(typeof item.amount == 'number')) {
+                console.log('itemIndex = ', itemIndex);
+                resultsArray.unsuccessfulDraws.push(item);
+            } else if (item.amount < 0 || !(typeof item.amount == 'number')) {
                 console.log(
                     'Draw not processed due to invalid draw amount',
                     item.amount
                 );
-                errorArray.unsuccessfulDraws.push(item);
+
                 console.log('itemIndex = ', itemIndex);
-                request.splice(itemIndex, 1);
-                //console.log(request);
-            }
-            if (!validateDate(item.effectiveDate)) {
+                resultsArray.unsuccessfulDraws.push(item);
+            } else if (!validateDate(item.effectiveDate)) {
                 console.log(
                     'Draw not processed due to invalid date format',
                     item.effectiveDate
                 );
-                errorArray.unsuccessfulDraws.push(item);
+
                 console.log('itemIndex = ', itemIndex);
-                request.splice(itemIndex, 1);
-                //console.log(request);
+                resultsArray.unsuccessfulDraws.push(item);
+            } else {
+                resultsArray.successfulDraws.push(item);
+                resultsArray.successfulDraws.sort(
+                    (a, b) =>
+                        new Date(a.effectiveDate) - new Date(b.effectiveDate)
+                );
             }
-            console.log(drawRequests);
+            //console.log(resultsArray);
         });
     }
-
-    /* drawRequests.forEach((drawRequests) => {
-        
-        
-        //console.log(item.itemId);
-        const idForItem = item.itemId;
-        const budgetItem = budget.budgetItems[idForItem - 1];
-        //var newBudgetBalance = budgetRemain;
-
-        console.log(budgetItem);
-        console.log(item);
-        //console.log(budgetRemain);
-        //console.log(newBudgetBalance);
-    }); */
 
     // Setup date format verify
     function validateDate(testdate) {
